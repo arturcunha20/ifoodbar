@@ -10,7 +10,6 @@ import ProductTypeRouter from "./routes/productsType"
 import ProductRouter from "./routes/products"
 import OrdersRouter from "./routes/orders"
 
-
 const cookieParser = require("cookie-parser")
 const PORT = process.env.PORT || 8000
 const app: Application = express()
@@ -23,7 +22,8 @@ app.use(express.static("public"))
 app.use(
   "/docs",
   swaggerUi.serve,
-  swaggerUi.setup(undefined, {
+  swaggerUi.setup(undefined,{
+    explorer: true,
     swaggerOptions: {
       url: "/swagger.yaml",
     },

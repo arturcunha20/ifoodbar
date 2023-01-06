@@ -4,6 +4,7 @@ import { CheckToken } from "../Auth/auth";
 
 const router = Router();
 
+
 router.route("/user")
   .get(CheckToken, async (req, res) => {
     const controller = new UserController();

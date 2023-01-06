@@ -1,19 +1,20 @@
 import { ProductsTypeService } from './../service/ProductsTypeService';
-import { Get, Route, Controller, Request, Post, Body} from "tsoa";
+import { Get, Route, Controller, Request, Post, Body, Tags, SuccessResponse, Response} from "tsoa";
 import * as response from "../responses";
 import { ProductsService } from "../service/ProductsService"
 import { UserService } from "../service/UserService";
 
-
 @Route("products")
+@Tags('Product')
 export default class ProductsController extends Controller {
-
 
     /**
    * Get all Products
    * @summary 
    */
     @Get("/all")
+    @SuccessResponse ('200', 'All data') 
+    @Response ('403', 'Error')
     public async getProducts(@Request() res: any,): Promise<any> {
         const data =await new ProductsService().getProductsAll()
         if(data.length > 0){
@@ -28,6 +29,9 @@ export default class ProductsController extends Controller {
    * @summary 
    */
     @Post("/create")
+    @SuccessResponse ('200', 'Create Product')
+    @Response ('422', 'Missing Field') 
+    @Response ('403', 'Error')
     public async create(@Request() _req: any, @Body() res: any): Promise<any> {
         try{
             const { name, price, type, token } = _req.body
@@ -71,6 +75,9 @@ export default class ProductsController extends Controller {
    * @summary A concise summary.
    */
     @Post("/byType")
+    @SuccessResponse ('200', 'Product By Type')
+    @Response ('422', 'Missing Field') 
+    @Response ('403', 'Not Found')
     public async byType(@Request() _req: any, @Body() res: any): Promise<any> {
         try{
             const { token } = _req.body
@@ -80,7 +87,7 @@ export default class ProductsController extends Controller {
         
             const resultType = await new ProductsTypeService().verifyType(token)
             if(resultType == false)
-                throw new Error(res.status(403).json(response.error("Could not find Product Type", res.statusCode)))            
+                throw new Error(res.status(404).json(response.error("Could not find Product Type", res.statusCode)))            
 
             const result = await new ProductsService().queryByType(token)
 

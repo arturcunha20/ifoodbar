@@ -1,15 +1,20 @@
-import { Post, Route, Controller, Request, Body, Get } from "tsoa";
+import { Post, Route, Controller, Request, Body, Get, Tags, SuccessResponse, Response } from "tsoa";
 import { ProductsTypeService }  from "../service/ProductsTypeService"
 import { UserService } from "../service/UserService";
 import * as response from "../responses";
 
 @Route("productsType")
+@Tags('Product Type')
 export default class ProdutsTypeController extends Controller {
     /**
    * Create a type of products
    * @summary A concise summary.
    */
     @Post("/create")
+    @SuccessResponse ('200', 'Product Type created') 
+    @Response ('401', 'Not Authenticated')
+    @Response ('403', 'Error')
+    @Response ('422', 'Missing Field')
     public async create(@Request() req: any, @Body() res: any): Promise<any> {
         try{
             var { name,token } = req.body;
@@ -40,6 +45,8 @@ export default class ProdutsTypeController extends Controller {
    * @summary A concise summary.
    */
     @Get("/all")
+    @SuccessResponse ('200', 'Product Type created') 
+    @Response ('403', 'Error')
     public async getAll(@Request() res: any ): Promise<any> {
         const data =await new ProductsTypeService().getProductsType()
         if(data.length > 0){

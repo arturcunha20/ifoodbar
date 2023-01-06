@@ -1,4 +1,4 @@
-import { Get, Post, Route, Controller, Body,  Query,  Request,  Hidden, Delete, Put } from "tsoa";
+import { Get, Post, Route, Controller, Body,  Query,  Request,  Hidden, Delete, Put, Tags, SuccessResponse, Response } from "tsoa";
 import * as response from "../responses";
 import { auth, admin } from "../fireabase"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
@@ -6,6 +6,7 @@ import { UserService } from "../service/UserService";
 import { ProductsService } from "../service/ProductsService"
 
 @Route("user")
+@Tags('User')
 export default class UserController extends Controller {
   
   @Get("/")
@@ -13,6 +14,9 @@ export default class UserController extends Controller {
    * Get a user
    * @summary 
    */
+  @SuccessResponse ('200', 'User Data') 
+  @Response ('403', 'Error')
+  @Response ('422', 'Missing Field')
   public async getUser(@Request() res: any, @Query() @Hidden() token?: string): Promise<any> {
     try{
       if (!token)
@@ -32,6 +36,9 @@ export default class UserController extends Controller {
    * Update a user
    * @summary 
    */
+  @SuccessResponse ('200', "update User") 
+  @Response ('403', 'Error')
+  @Response ('422', 'Missing Field')
   public async updateUser(@Request() req: any, @Body() res: any): Promise<any> {
     try{
       const { name, token } = req.body
@@ -43,7 +50,7 @@ export default class UserController extends Controller {
 
       const result = await new UserService().updateUser(token,name)
 
-      if(result) res.status(200).json(response.success("Update", [result], res.statusCode));
+      if(result) res.status(200).json(response.success("Update User", [result], res.statusCode));
       else res.status(403).json(response.success("Error", [], res.statuscode))
 
       
@@ -57,6 +64,9 @@ export default class UserController extends Controller {
    * @summary
    */
   @Post("/login")
+  @SuccessResponse ('200', "Session Created") 
+  @Response ('403', 'Error')
+  @Response ('422', 'Missing Field')
   public async LogIn(@Request() req: any, @Body() res: any): Promise<any> {
     const { email, password } = req.body;
     const expiresIn = 60 * 60 * 24 * 2 * 1000; //segundos * minutos * horas * dias * ms
@@ -92,9 +102,12 @@ export default class UserController extends Controller {
   /**
    * Create a user
    * 
-   * @summary y.
+   * @summary 
    */
   @Post("/signin")
+  @SuccessResponse ('200', "Account created successfully.") 
+  @Response ('403', 'Error')
+  @Response ('422', 'Missing Field')
   public async signIn(@Request() req: any, @Body() res: any): Promise<any> {
     const { email, password, name } = req.body;
     try{
@@ -141,6 +154,7 @@ export default class UserController extends Controller {
    * @summary 
    */
    @Post("/signOut")
+   @SuccessResponse ('200', "Success") 
    public async signOut(@Request() req: any, @Body() res: any): Promise<any>{
     res.clearCookie("session");
     console.log(req.body);
@@ -158,6 +172,9 @@ export default class UserController extends Controller {
    * @summary A concise summary.
    */
   @Post("/addFavorites")
+  @SuccessResponse ('200', "Product added to favorites successfully.") 
+  @Response ('403', 'Error')
+  @Response ('422', 'Missing Field')
   public async addFavorites(@Request() req: any, @Body() res: any): Promise<any>{
       try{
         const { token, uidProduct } = req.body;
@@ -188,6 +205,8 @@ export default class UserController extends Controller {
    * @summary 
    */
   @Delete("/delFavorites")
+  @SuccessResponse ('200', "Favorite Deleted") 
+  @Response ('422', 'Missing Field')
   public async delFavorites(@Request() req: any, @Body() res: any): Promise<any>{
       try{
         const { token, uidFavorites } = req.body;
@@ -198,7 +217,8 @@ export default class UserController extends Controller {
           throw new Error(res.status(422).json(response.validation({ label: "Field [uidFavorites] is required." })))
 
         const result = await new UserService().delFavorite(uidFavorites)
-        res.send(result)
+
+        res.status(200).json(response.success("Favorite Deleted", [ result.data ], res.statusCode));
       }
       catch(err){}
       
@@ -208,6 +228,9 @@ export default class UserController extends Controller {
    * Get all the favorites from a user
    * @summary 
    */
+   @SuccessResponse ('200', "Product added to favorites successfully.") 
+   @Response ('403', 'Error')
+   @Response ('422', 'Missing Field')
   @Get("/allFavorites")
     public async getAllFavorites(@Request() res: any, @Query() @Hidden() token?: string): Promise<any> {
       try{
@@ -216,9 +239,9 @@ export default class UserController extends Controller {
   
           const data = await new UserService().getFavorite(token)
           if(data.length > 0){
-              res.send({status: "Success", message:"All data", data: data})
+              res.status(200).send({status: "Success", message:"All data", data: data})
           }else{
-              res.send({status: "Error", message:"No data found", data: []})
+              res.status(403).send({status: "Error", message:"No data found", data: []})
           }
       }
       catch(e){}

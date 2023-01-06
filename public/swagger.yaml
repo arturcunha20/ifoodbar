@@ -16,12 +16,16 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Create Order'
                     schema:
                         additionalProperties: true
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Create a new order'
+            tags:
+                - Orders
             security: []
             parameters:
                 -
@@ -37,10 +41,16 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'All Orders'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             description: 'Get all orders'
+            tags:
+                - Orders
             security: []
             parameters: []
     /addOrder/details:
@@ -50,12 +60,18 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Orders Details'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Get details from order'
+            tags:
+                - Orders
             security: []
             parameters:
                 -
@@ -71,10 +87,14 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'All data'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
             description: 'Get all Products'
+            tags:
+                - Product
             security: []
             parameters: []
     /products/create:
@@ -84,12 +104,18 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Create Product'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Create a new product'
+            tags:
+                - Product
             security: []
             parameters:
                 -
@@ -105,13 +131,19 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Product By Type'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: 'Not Found'
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Show product by type'
             summary: 'A concise summary.'
+            tags:
+                - Product
             security: []
             parameters:
                 -
@@ -127,13 +159,21 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Product Type created'
                     schema:
                         additionalProperties: true
+                '401':
+                    description: 'Not Authenticated'
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Create a type of products'
             summary: 'A concise summary.'
+            tags:
+                - 'Product Type'
             security: []
             parameters:
                 -
@@ -149,11 +189,15 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Product Type created'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
             description: 'Get all types of products'
             summary: 'A concise summary.'
+            tags:
+                - 'Product Type'
             security: []
             parameters: []
     /user:
@@ -163,9 +207,15 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'User Data'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
+            tags:
+                - User
             security: []
             parameters: []
     /user/update:
@@ -175,11 +225,17 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'update User'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
+            tags:
+                - User
             security: []
             parameters:
                 -
@@ -195,12 +251,18 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Session Created'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Login a user'
+            tags:
+                - User
             security: []
             parameters:
                 -
@@ -216,13 +278,18 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Account created successfully.'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Create a user'
-            summary: y.
+            tags:
+                - User
             security: []
             parameters:
                 -
@@ -238,12 +305,14 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: Success
                     schema:
                         additionalProperties: true
             consumes:
                 - application/json
             description: 'Logout a user'
+            tags:
+                - User
             security: []
             parameters:
                 -
@@ -259,13 +328,19 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Product added to favorites successfully.'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Add a product to fuser favorites'
             summary: 'A concise summary.'
+            tags:
+                - User
             security: []
             parameters:
                 -
@@ -281,12 +356,16 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Favorite Deleted'
                     schema:
                         additionalProperties: true
+                '422':
+                    description: 'Missing Field'
             consumes:
                 - application/json
             description: 'Delete a product from user favorites'
+            tags:
+                - User
             security: []
             parameters:
                 -
@@ -302,10 +381,16 @@ paths:
                 - application/json
             responses:
                 '200':
-                    description: Ok
+                    description: 'Product added to favorites successfully.'
                     schema:
                         additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
             description: 'Get all the favorites from a user'
+            tags:
+                - User
             security: []
             parameters: []
 produces:
