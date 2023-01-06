@@ -32,20 +32,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductsTypeService = void 0;
+exports.ProductsService = void 0;
 const _crud = __importStar(require("../CloudFirestoreCRUD"));
 const uuid_1 = require("uuid");
-class ProductsTypeService {
-    create(name) {
+const fireabase_1 = require("../fireabase");
+class ProductsService {
+    create(name, preco, type, url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const productType = { name: name, uid: (0, uuid_1.v4)() };
-            const result = yield _crud.post({ collection: "productsType", data: productType });
+            const product = { name: name, uid: (0, uuid_1.v4)(), price: preco, type: type, urlImage: url };
+            const result = yield _crud.post({ collection: "products", data: product });
             return result;
         });
     }
-    getProductsType() {
+    getProductsAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield _crud.getAll({ collection: "productsType" });
+            const result = yield _crud.getAll({ collection: "products" });
             let productsType = [];
             if (result.status == "Success") {
                 productsType = result.data;
@@ -53,14 +54,42 @@ class ProductsTypeService {
             return productsType;
         });
     }
-    verifyType(token) {
+    verifyProduct(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield _crud.get({ collection: "productsType", token: token });
+            const result = yield _crud.get({ collection: "products", token: token });
             if (result.status == "Success")
                 return true;
             else
                 return false;
         });
     }
+    queryByType(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield _crud.getAllQuery({ collection: "products", token: token, parameter: "type" });
+            if (result.status == "Success")
+                return result;
+            else
+                return false;
+        });
+    }
+    uploadImage(image, name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const FileName = name + "_" + Date.now() + "." + image.originalname.split(".").pop();
+            const file = fireabase_1.admin.storage().bucket().file(FileName);
+            const steam = file.createWriteStream({
+                metadata: {
+                    contentType: image.mimetype
+                },
+            });
+            steam.on("error", () => {
+                return "error";
+            });
+            steam.on("finish", () => __awaiter(this, void 0, void 0, function* () {
+                yield file.makePublic();
+            }));
+            steam.end(image.buffer);
+            return "https://storage.googleapis.com/" + fireabase_1.Bucket + "/" + FileName;
+        });
+    }
 }
-exports.ProductsTypeService = ProductsTypeService;
+exports.ProductsService = ProductsService;

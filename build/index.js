@@ -8,6 +8,9 @@ const morgan_1 = __importDefault(require("morgan"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const tsoa_1 = require("tsoa");
 const user_1 = __importDefault(require("./routes/user"));
+const productsType_1 = __importDefault(require("./routes/productsType"));
+const products_1 = __importDefault(require("./routes/products"));
+const orders_1 = __importDefault(require("./routes/orders"));
 const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 8000;
 const app = (0, express_1.default)();
@@ -17,7 +20,7 @@ app.use((0, morgan_1.default)("tiny"));
 app.use(express_1.default.static("public"));
 app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(undefined, {
     swaggerOptions: {
-        url: "/swagger.json",
+        url: "/swagger.yaml",
     },
 }));
 app.use(function errorHandler(err, req, res, next) {
@@ -36,6 +39,9 @@ app.use(function errorHandler(err, req, res, next) {
     next();
 });
 app.use(user_1.default);
+app.use(products_1.default);
+app.use(productsType_1.default);
+app.use(orders_1.default);
 app.listen(PORT, () => {
     console.log("Server is running on localhost:" + PORT + "\nAnd Swagger: localhost:" + PORT + "/docs");
 });

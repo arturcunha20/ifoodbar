@@ -48,34 +48,50 @@ const tsoa_1 = require("tsoa");
 const response = __importStar(require("../responses"));
 const fireabase_1 = require("../fireabase");
 const auth_1 = require("firebase/auth");
-const firestore_1 = require("firebase/firestore");
+const UserService_1 = require("../service/UserService");
+const ProductsService_1 = require("../service/ProductsService");
 let UserController = class UserController extends tsoa_1.Controller {
     getUser(res, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token)
-                    throw new Error(res.status(422).json(response.validation({ label: "Field [token] is required." })));
-                const collection = fireabase_1.db.collection('user');
-                const user = yield collection.doc(token).get();
-                if (user.exists)
-                    res.status(200).json(response.success("User details. ", [user.data()], res.statusCode));
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })));
+                const data = yield new UserService_1.UserService().getUser(token);
+                if (data)
+                    res.status(200).json(response.success("User Data", [data], res.statusCode));
                 else
-                    throw new Error(res.status(403).json(response.error("Could not find user", res.statusCode)));
+                    res.status(403).json(response.success("Error", [], res.statuscode));
+            }
+            catch (e) { }
+        });
+    }
+    updateUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name, token } = req.body;
+                if (!token)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })));
+                if (!name)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [Name] is required." })));
+                const result = yield new UserService_1.UserService().updateUser(token, name);
+                if (result)
+                    res.status(200).json(response.success("Update", [result], res.statusCode));
+                else
+                    res.status(403).json(response.success("Error", [], res.statuscode));
             }
             catch (e) { }
         });
     }
     /**
-     * Retrieves the details of an existing user.
-     * Supply the unique user ID from either and receive corresponding user details.
-     * @summary A concise summary.
+     * Login a user
+     *
+     * @summary
      */
     LogIn(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { email, password } = req.body;
             const expiresIn = 60 * 60 * 24 * 2 * 1000; //segundos * minutos * horas * dias * ms
             try {
-                //const { email, password } = req;    
                 if (!email)
                     throw new Error(res.status(422).json(response.validation({ label: "Field [email] is required." })));
                 if (!password)
@@ -87,8 +103,9 @@ let UserController = class UserController extends tsoa_1.Controller {
                         yield fireabase_1.admin.auth().createSessionCookie(idToken, { expiresIn })
                             .then((sessionCookie) => __awaiter(this, void 0, void 0, function* () {
                             const options = { maxAge: expiresIn, httpOnly: true };
+                            const userGet = yield new UserService_1.UserService().getUser(user.uid);
                             res.cookie("session", sessionCookie, options);
-                            res.status(200).json(response.success("Session created. ", ["session", sessionCookie, options], res.statusCode));
+                            res.status(200).json(response.success("Session Created", [sessionCookie, userGet], res.statusCode));
                         }), (error) => {
                             res.status(403).json(response.error(error.message, res.statusCode));
                         });
@@ -102,9 +119,9 @@ let UserController = class UserController extends tsoa_1.Controller {
         });
     }
     /**
-     * Retrieves the details of an existing user.
-     * Supply the unique user ID from either and receive corresponding user details.
-     * @summary A concise summary.
+     * Create a user
+     *
+     * @summary y.
      */
     signIn(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -116,13 +133,23 @@ let UserController = class UserController extends tsoa_1.Controller {
                     throw new Error(res.status(422).json(response.validation({ type: "Field [password] is required." })));
                 if (!name)
                     throw new Error(res.status(422).json(response.validation({ type: "Field [name] is required." })));
+                if (req.body.type == undefined)
+                    req.body.type = "1";
+                else {
+                    const resultType = yield new UserService_1.UserService().verifyType(req.body.type);
+                    if (resultType == false)
+                        throw new Error(res.status(403).json(response.error("Could not find User Type", res.statusCode)));
+                }
                 yield (0, auth_1.createUserWithEmailAndPassword)(fireabase_1.auth, email, password)
                     .then((usercredentials) => __awaiter(this, void 0, void 0, function* () {
-                    var uid = usercredentials.user.uid;
-                    var user = { email: email, password: password, uid: uid, nome: name };
-                    yield (0, firestore_1.setDoc)((0, firestore_1.doc)(fireabase_1.db, "user", uid), user)
-                        .then(() => __awaiter(this, void 0, void 0, function* () { res.status(200).json(response.success("Account created successfully. ", [uid], res.statusCode)); }))
-                        .catch(error => { res.status(403).json(response.error(error.message, res.statusCode)); });
+                    req.body.uid = usercredentials.user.uid;
+                    const result = yield new UserService_1.UserService().create(req.body);
+                    if (result.status == 'Success') {
+                        res.status(200).send({ status: "Success", message: "Account created successfully.", data: result.data });
+                    }
+                    else {
+                        res.status(403).json(response.error("Some error occurred while creating the user", res.statusCode));
+                    }
                 }))
                     .catch(error => { res.status(403).json(response.error(error.message, res.statusCode)); });
             }
@@ -130,9 +157,9 @@ let UserController = class UserController extends tsoa_1.Controller {
         });
     }
     /**
-    * Retrieves the details of an existing user.
-    * Supply the unique user ID from either and receive corresponding user details.
-    * @summary A concise summary.
+    * Logout a user
+    *
+    * @summary
     */
     signOut(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -146,13 +173,76 @@ let UserController = class UserController extends tsoa_1.Controller {
             return "Sucesso";
         });
     }
+    /**
+     * Add a product to fuser favorites
+     * @summary A concise summary.
+     */
+    addFavorites(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { token, uidProduct } = req.body;
+                if (!token)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })));
+                if (!uidProduct)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [uidProduct] is required." })));
+                const resultType = yield new ProductsService_1.ProductsService().verifyProduct(uidProduct);
+                if (resultType == false)
+                    throw new Error(res.status(403).json(response.error("Could not find Product", res.statusCode)));
+                const result = yield new UserService_1.UserService().addFavorites({ uidProduct: uidProduct, uidUser: token });
+                if (result.status == 'Success') {
+                    res.status(200).send({ status: "Success", message: "Product added to favorites successfully.", data: result.data });
+                }
+                else {
+                    res.status(403).json(response.error("An error occurred while adding the product to favorites", res.statusCode));
+                }
+            }
+            catch (err) { }
+        });
+    }
+    /**
+     * Delete a product from user favorites
+     * @summary
+     */
+    delFavorites(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { token, uidFavorites } = req.body;
+                if (!token)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })));
+                if (!uidFavorites)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [uidFavorites] is required." })));
+                const result = yield new UserService_1.UserService().delFavorite(uidFavorites);
+                res.send(result);
+            }
+            catch (err) { }
+        });
+    }
+    /**
+    * Get all the favorites from a user
+    * @summary
+    */
+    getAllFavorites(res, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })));
+                const data = yield new UserService_1.UserService().getFavorite(token);
+                if (data.length > 0) {
+                    res.send({ status: "Success", message: "All data", data: data });
+                }
+                else {
+                    res.send({ status: "Error", message: "No data found", data: [] });
+                }
+            }
+            catch (e) { }
+        });
+    }
 };
 __decorate([
     (0, tsoa_1.Get)("/")
     /**
-     * Retrieves the details of an existing user.
-     * Supply the unique user ID from either and receive corresponding user details.
-     * @summary A concise summary.
+     * Get a user
+     * @summary
      */
     ,
     __param(0, (0, tsoa_1.Request)()),
@@ -162,6 +252,19 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUser", null);
+__decorate([
+    (0, tsoa_1.Put)("/update")
+    /**
+     * Update a user
+     * @summary
+     */
+    ,
+    __param(0, (0, tsoa_1.Request)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateUser", null);
 __decorate([
     (0, tsoa_1.Post)("/login"),
     __param(0, (0, tsoa_1.Request)()),
@@ -186,6 +289,31 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "signOut", null);
+__decorate([
+    (0, tsoa_1.Post)("/addFavorites"),
+    __param(0, (0, tsoa_1.Request)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "addFavorites", null);
+__decorate([
+    (0, tsoa_1.Delete)("/delFavorites"),
+    __param(0, (0, tsoa_1.Request)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "delFavorites", null);
+__decorate([
+    (0, tsoa_1.Get)("/allFavorites"),
+    __param(0, (0, tsoa_1.Request)()),
+    __param(1, (0, tsoa_1.Query)()),
+    __param(1, (0, tsoa_1.Hidden)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllFavorites", null);
 UserController = __decorate([
     (0, tsoa_1.Route)("user")
 ], UserController);

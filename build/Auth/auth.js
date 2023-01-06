@@ -11,15 +11,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CheckToken = void 0;
 const fireabase_1 = require("../fireabase");
+/**
+ * Check the user token
+ * @param req
+ * @param res
+ * @param next
+ */
 const CheckToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const token = req.headers['authorization'].replace('Bearer ', '');
+        let token = "";
+        if (req.headers['authorization']) {
+            token = req.headers['authorization'].replace('Bearer ', '');
+        }
+        if (req.body.token) {
+            token = req.body.token;
+        }
         if (!token) {
             throw new Error("Please authenticate");
         }
         yield fireabase_1.admin.auth().verifySessionCookie(token, true)
             .then((UserData) => {
-            req.headers['authorization'] = UserData.uid;
+            req.body.token = UserData.uid;
         }).catch((err) => {
             throw new Error(err.message);
         });

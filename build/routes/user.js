@@ -19,7 +19,13 @@ const router = (0, express_1.Router)();
 router.route("/user")
     .get(auth_1.CheckToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const controller = new User_1.default();
-    const response = yield controller.getUser(res, req.headers['authorization']);
+    const response = yield controller.getUser(res, req.body.token);
+    return res.send(response);
+}));
+router.route("/user/update")
+    .put(auth_1.CheckToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const controller = new User_1.default();
+    const response = yield controller.updateUser(req, res);
     return res.send(response);
 }));
 router.route("/user/login")
@@ -38,6 +44,24 @@ router.route("/user/signOut")
     .post((_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const controller = new User_1.default();
     const response = yield controller.signOut(_req, res);
+    return res.send(response);
+}));
+router.route("/user/addFavorites")
+    .post(auth_1.CheckToken, (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const controller = new User_1.default();
+    const response = yield controller.addFavorites(_req, res);
+    return res.send(response);
+}));
+router.route("/user/delFavorites")
+    .delete(auth_1.CheckToken, (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const controller = new User_1.default();
+    const response = yield controller.delFavorites(_req, res);
+    return res.send(response);
+}));
+router.route("/user/allFavorites")
+    .get(auth_1.CheckToken, (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const controller = new User_1.default();
+    const response = yield controller.getAllFavorites(res, _req.body.token);
     return res.send(response);
 }));
 exports.default = router;

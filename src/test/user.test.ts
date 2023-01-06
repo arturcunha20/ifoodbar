@@ -39,6 +39,17 @@ describe("User", () => {
     console.log(response.body)
   })
 
+  it("Update user", async () => {
+    const response = await request("http://localhost:8000").put("/user/update")
+    .send({
+      name:"Iuri Andre",
+      token:tokenUser
+    })
+    .expect(200);
+
+    console.log(response.body)
+  })
+
   it("SignOut a User", async () => {
     await request("http://localhost:8000").post("/user/signout")
     .expect(200);
