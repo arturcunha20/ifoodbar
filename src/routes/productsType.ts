@@ -1,6 +1,5 @@
 import { Router } from "express";
 import ProdutsTypeController from "../controllers/produtcsType"
-import * as ola from "../CloudFirestoreCRUD"
 import { CheckToken } from "../Auth/auth"; 
 
 const router = Router();

@@ -1,15 +1,7 @@
 basePath: /
 consumes:
     - application/json
-definitions:
-    PingResponse:
-        properties:
-            message:
-                type: string
-        required:
-            - message
-        type: object
-        additionalProperties: false
+definitions: {}
 info:
     title: restapi
     version: 1.0.0
@@ -29,6 +21,7 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
+            description: 'Create a new order'
             security: []
             parameters:
                 -
@@ -47,6 +40,7 @@ paths:
                     description: Ok
                     schema:
                         additionalProperties: true
+            description: 'Get all orders'
             security: []
             parameters: []
     /addOrder/details:
@@ -61,6 +55,7 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
+            description: 'Get details from order'
             security: []
             parameters:
                 -
@@ -69,18 +64,6 @@ paths:
                     required: true
                     schema:
                         type: object
-    /ping:
-        get:
-            operationId: GetMessage
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        $ref: '#/definitions/PingResponse'
-            security: []
-            parameters: []
     /products/all:
         get:
             operationId: GetProducts
@@ -91,6 +74,7 @@ paths:
                     description: Ok
                     schema:
                         additionalProperties: true
+            description: 'Get all Products'
             security: []
             parameters: []
     /products/create:
@@ -105,6 +89,7 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
+            description: 'Create a new product'
             security: []
             parameters:
                 -
@@ -125,6 +110,8 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
+            description: 'Show product by type'
+            summary: 'A concise summary.'
             security: []
             parameters:
                 -
@@ -145,7 +132,7 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
-            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
+            description: 'Create a type of products'
             summary: 'A concise summary.'
             security: []
             parameters:
@@ -165,6 +152,8 @@ paths:
                     description: Ok
                     schema:
                         additionalProperties: true
+            description: 'Get all types of products'
+            summary: 'A concise summary.'
             security: []
             parameters: []
     /user:
@@ -191,8 +180,7 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
-            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
-            summary: 'A concise summary.'
+            description: 'Login a user'
             security: []
             parameters:
                 -
@@ -213,8 +201,8 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
-            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
-            summary: 'A concise summary.'
+            description: 'Create a user'
+            summary: y.
             security: []
             parameters:
                 -
@@ -235,8 +223,7 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
-            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
-            summary: 'A concise summary.'
+            description: 'Logout a user'
             security: []
             parameters:
                 -
@@ -257,7 +244,7 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
-            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
+            description: 'Add a product to fuser favorites'
             summary: 'A concise summary.'
             security: []
             parameters:
@@ -279,8 +266,7 @@ paths:
                         additionalProperties: true
             consumes:
                 - application/json
-            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
-            summary: 'A concise summary.'
+            description: 'Delete a product from user favorites'
             security: []
             parameters:
                 -
@@ -299,6 +285,7 @@ paths:
                     description: Ok
                     schema:
                         additionalProperties: true
+            description: 'Get all the favorites from a user'
             security: []
             parameters: []
 produces:

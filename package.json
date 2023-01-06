@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node build/index.js",
-    "build": "tsoa spec-and-routes && tsc",
+    "build": "tsoa spec && tsc",
     "postinstall": "npm run build",
     "predev": "npm run swagger",
     "prebuild": "npm run swagger",
