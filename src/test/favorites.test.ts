@@ -30,12 +30,13 @@ describe("Favorites", () => {
 
 
   it("Delete a Favorite", async () => {
-    const response = await requestFavorito("http://localhost:8000").delete("/user/delFavorites")
+    await requestFavorito("http://localhost:8000").delete("/user/delFavorites")
     .send({
         token: UserTokenFavorites,
         uidFavorites: uidFavorito
     })
     .expect(200);
+
   })
 
 

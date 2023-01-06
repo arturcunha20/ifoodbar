@@ -26,7 +26,7 @@ describe("Type", () => {
 
 describe("Products", () => {
   it("Create a product", async () => {
-    const response = await requestProduct ("http://localhost:8000").post("/products/create")
+    await requestProduct ("http://localhost:8000").post("/products/create")
     .send({
       name:"Coca-Cola",
       price: "1.3",
