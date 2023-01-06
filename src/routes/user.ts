@@ -11,6 +11,13 @@ router.route("/user")
     return res.send(response);
   });
 
+router.route("/user/update")
+  .put(CheckToken, async (req, res) => {
+    const controller = new UserController();
+    const response : any = await controller.updateUser(req, res) ;
+    return res.send(response);
+  });
+
 router.route("/user/login")
   .post(async (_req, res) => {
     const controller = new UserController();

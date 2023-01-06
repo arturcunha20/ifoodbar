@@ -1,4 +1,4 @@
-import { Get, Post, Route, Controller, Body,  Query,  Request,  Hidden, Delete } from "tsoa";
+import { Get, Post, Route, Controller, Body,  Query,  Request,  Hidden, Delete, Put } from "tsoa";
 import * as response from "../responses";
 import { auth, admin } from "../fireabase"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
@@ -22,6 +22,30 @@ export default class UserController extends Controller {
 
       if(data) res.status(200).json(response.success("User Data", [data], res.statusCode));
       else res.status(403).json(response.success("Error", [], res.statuscode))
+      
+    }
+    catch(e){}
+  }
+
+  @Put("/update")
+  /**
+   * Update a user
+   * @summary 
+   */
+  public async updateUser(@Request() req: any, @Body() res: any): Promise<any> {
+    try{
+      const { name, token } = req.body
+      if (!token)
+        throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })))
+
+      if (!name)
+        throw new Error(res.status(422).json(response.validation({ label: "Field [Name] is required." })))
+
+      const result = await new UserService().updateUser(token,name)
+
+      if(result) res.status(200).json(response.success("Update", [result], res.statusCode));
+      else res.status(403).json(response.success("Error", [], res.statuscode))
+
       
     }
     catch(e){}

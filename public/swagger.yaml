@@ -168,6 +168,26 @@ paths:
                         additionalProperties: true
             security: []
             parameters: []
+    /user/update:
+        put:
+            operationId: UpdateUser
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
     /user/login:
         post:
             operationId: LogIn

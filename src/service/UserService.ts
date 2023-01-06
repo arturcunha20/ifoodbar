@@ -41,6 +41,17 @@ export class UserService {
 
     return user
   }
+
+
+  public async updateUser(uid: string, name:string): Promise<boolean> {
+    const user:any = await this.getUser(uid)
+    user.name = name
+
+    const result: any = await _crud.update({collection: "user", token: uid, data:user}) 
+    
+    if(result.status == "Success") return true
+    else return false
+  }
   
   public async addFavorites(data: FavoritesCreationParams): Promise<any> {
       const result = await _crud.post({collection:"favorites", data: data})
