@@ -1,0 +1,241 @@
+{
+	"basePath": "/",
+	"consumes": [
+		"application/json"
+	],
+	"definitions": {
+		"PingResponse": {
+			"properties": {
+				"message": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"message"
+			],
+			"type": "object",
+			"additionalProperties": false
+		},
+		"Pick_ProductsType.name_": {
+			"properties": {
+				"name": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"name"
+			],
+			"type": "object",
+			"description": "From T, pick a set of properties whose keys are in the union K"
+		},
+		"ProductsTypeCreationParams": {
+			"$ref": "#/definitions/Pick_ProductsType.name_"
+		}
+	},
+	"info": {
+		"title": "restapi",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/ping": {
+			"get": {
+				"operationId": "GetMessage",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/PingResponse"
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/ProductsType/add": {
+			"post": {
+				"operationId": "AddProductType",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"additionalProperties": true
+						}
+					},
+					"404": {
+						"description": "",
+						"schema": {
+							"properties": {
+								"reason": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"reason"
+							],
+							"type": "object"
+						}
+					}
+				},
+				"consumes": [
+					"application/json"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "_req",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/ProductsTypeCreationParams"
+						}
+					}
+				]
+			}
+		},
+		"/user": {
+			"get": {
+				"operationId": "GetUser",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"additionalProperties": true
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/user/login": {
+			"post": {
+				"operationId": "LogIn",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"additionalProperties": true
+						}
+					}
+				},
+				"consumes": [
+					"application/json"
+				],
+				"description": "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details.",
+				"summary": "A concise summary.",
+				"security": [],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "res",
+						"required": true,
+						"schema": {
+							"type": "object"
+						}
+					}
+				]
+			}
+		},
+		"/user/signin": {
+			"post": {
+				"operationId": "SignIn",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"additionalProperties": true
+						}
+					}
+				},
+				"consumes": [
+					"application/json"
+				],
+				"description": "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details.",
+				"summary": "A concise summary.",
+				"security": [],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "res",
+						"required": true,
+						"schema": {
+							"type": "object"
+						}
+					}
+				]
+			}
+		},
+		"/user/signOut": {
+			"post": {
+				"operationId": "SignOut",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"additionalProperties": true
+						}
+					}
+				},
+				"consumes": [
+					"application/json"
+				],
+				"description": "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details.",
+				"summary": "A concise summary.",
+				"security": [],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "res",
+						"required": true,
+						"schema": {
+							"type": "object"
+						}
+					}
+				]
+			}
+		}
+	},
+	"produces": [
+		"application/json"
+	],
+	"swagger": "2.0",
+	"securityDefinitions": {
+		"api_key": {
+			"type": "apiKey",
+			"name": "access_token",
+			"in": "query"
+		},
+		"tsoa_auth": {
+			"type": "oauth2",
+			"authorizationUrl": "http://swagger.io/api/oauth/dialog",
+			"flow": "implicit",
+			"scopes": {
+				"write:pets": "modify things",
+				"read:pets": "read things"
+			}
+		}
+	}
+}

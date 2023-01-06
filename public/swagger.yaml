@@ -1,0 +1,318 @@
+basePath: /
+consumes:
+    - application/json
+definitions:
+    PingResponse:
+        properties:
+            message:
+                type: string
+        required:
+            - message
+        type: object
+        additionalProperties: false
+info:
+    title: restapi
+    version: 1.0.0
+    license:
+        name: ISC
+    contact: {}
+paths:
+    /addOrder/create:
+        post:
+            operationId: AddNewOrder
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /addOrder/all:
+        get:
+            operationId: GetOrders
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            security: []
+            parameters: []
+    /addOrder/details:
+        post:
+            operationId: GetOrderDetails
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /ping:
+        get:
+            operationId: GetMessage
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/PingResponse'
+            security: []
+            parameters: []
+    /products/all:
+        get:
+            operationId: GetProducts
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            security: []
+            parameters: []
+    /products/create:
+        post:
+            operationId: Create
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /products/byType:
+        post:
+            operationId: ByType
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /productsType/create:
+        post:
+            operationId: Create
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
+            summary: 'A concise summary.'
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /productsType/all:
+        get:
+            operationId: GetAll
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            security: []
+            parameters: []
+    /user:
+        get:
+            operationId: GetUser
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            security: []
+            parameters: []
+    /user/login:
+        post:
+            operationId: LogIn
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
+            summary: 'A concise summary.'
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /user/signin:
+        post:
+            operationId: SignIn
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
+            summary: 'A concise summary.'
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /user/signOut:
+        post:
+            operationId: SignOut
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
+            summary: 'A concise summary.'
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /user/addFavorites:
+        post:
+            operationId: AddFavorites
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
+            summary: 'A concise summary.'
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /user/delFavorites:
+        delete:
+            operationId: DelFavorites
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
+            description: "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details."
+            summary: 'A concise summary.'
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /user/allFavorites:
+        get:
+            operationId: GetAllFavorites
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            security: []
+            parameters: []
+produces:
+    - application/json
+swagger: '2.0'
+securityDefinitions:
+    api_key:
+        type: apiKey
+        name: access_token
+        in: query
+    tsoa_auth:
+        type: oauth2
+        authorizationUrl: 'http://swagger.io/api/oauth/dialog'
+        flow: implicit
+        scopes:
+            'write:pets': 'modify things'
+            'read:pets': 'read things'
