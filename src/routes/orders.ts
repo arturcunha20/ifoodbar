@@ -12,19 +12,26 @@ router.route("/orders/create")
     return res.send(response);
   })
 
-router.route("/orders/all")
+  router.route("/orders/allUser")
   .get(CheckToken, async(req,res) => {
     const controller = new OrdersController();
-    const response : any = await controller.getOrders(res, req.body.token);
+    const response : any = await controller.getOrdersUser(res, req.body.token);
     return res.send(response);
   })
 
 
-router.route("/orders/details")
-  .post(CheckToken, async(req,res) => {
+  router.route("/orders/all")
+  .get(CheckToken, async(_req,res) => {
     const controller = new OrdersController();
-    const response : any = await controller.getOrderDetails(req, res);
+    const response : any = await controller.getOrders(res);
     return res.send(response);
   })
+
+  router.route("/orders/details")
+    .post(CheckToken, async(req,res) => {
+      const controller = new OrdersController();
+      const response : any = await controller.getOrderDetails(req, res);
+      return res.send(response);
+    })
 
 export default router;

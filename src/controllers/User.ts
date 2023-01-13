@@ -52,8 +52,6 @@ export default class UserController extends Controller {
 
       if(result) res.status(200).json(response.success("Update User", [result], res.statusCode));
       else res.status(403).json(response.success("Error", [], res.statuscode))
-
-      
     }
     catch(e){}
   }

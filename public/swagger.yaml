@@ -34,6 +34,25 @@ paths:
                     required: true
                     schema:
                         type: object
+    /addOrder/allUser:
+        get:
+            operationId: GetOrdersUser
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: 'All Orders'
+                    schema:
+                        additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
+            description: 'Get all orders from a user'
+            tags:
+                - Orders
+            security: []
+            parameters: []
     /addOrder/all:
         get:
             operationId: GetOrders

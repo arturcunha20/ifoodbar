@@ -15,8 +15,8 @@ export default class ProductsController extends Controller {
     @Get("/all")
     @SuccessResponse ('200', 'All data') 
     @Response ('403', 'Error')
-    public async getProducts(@Request() res: any,): Promise<any> {
-        const data =await new ProductsService().getProductsAll()
+    public async getProducts(@Request() res: any): Promise<any> {
+        const data = await new ProductsService().getProductsAll()
         if(data.length > 0){
             res.send({status: "Success", message:"All data", data: data})
         }else{

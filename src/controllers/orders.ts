@@ -43,21 +43,21 @@ export default class OrdersController {
     }
 
     /**
-   * Get all orders
+   * Get all orders from a user
    * @summary 
    */
-    @Get("/all")
+    @Get("/allUser")
     @SuccessResponse ('200', 'All Orders') 
     @Response ('422', 'Missing Field')
     @Response ('403', 'Error')
-    public async getOrders(@Request() res: any, @Query() @Hidden() token?: string): Promise<any> {
+    public async getOrdersUser(@Request() res: any, @Query() @Hidden() token?: string): Promise<any> {
         try{
             if (!token)
               throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })))
       
-            const data = await new OrdersService().getOrders(token)
+            const data = await new OrdersService().getOrdersUser(token)
             if(data){
-              res.status(200).send({status: "Success", message:"All Orders", data: data})
+              res.status(200).send({status: "Success", message:"All Orders by User", data: data})
             }else{
               res.status(403).json(response.success("Error", [], res.statuscode))
             }
@@ -65,6 +65,28 @@ export default class OrdersController {
           catch(e){}
     }
 
+
+        /**
+   * Get all orders
+   * @summary 
+   */
+        @Get("/all")
+        @SuccessResponse ('200', 'All Orders') 
+        @Response ('422', 'Missing Field')
+        @Response ('403', 'Error')
+        public async getOrders(@Request() res: any): Promise<any> {
+            try{
+        
+                const data = await new OrdersService().getOrders()
+                if(data){
+                  res.status(200).send({status: "Success", message:"All Orders", data: data})
+                }else{
+                  res.status(403).json(response.success("Error", [], res.statuscode))
+                }
+              }
+              catch(e){}
+        }
+    
 
     /**
    * Get details from order

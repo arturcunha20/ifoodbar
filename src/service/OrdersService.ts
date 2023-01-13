@@ -17,7 +17,7 @@ export class OrdersService {
         return result
     }
 
-    public async getOrders(uid: string): Promise<any[]> {
+    public async getOrdersUser(uid: string): Promise<any[]> {
         const result: any = await _crud.getAllQuery({collection:"orders", token:uid, parameter: "UserUid"})
         let orders: any[] = []
         
@@ -26,6 +26,18 @@ export class OrdersService {
         }
         return orders
     }
+
+    public async getOrders(): Promise<any[]> {
+        const result: any = await _crud.getAll({collection:"orders"})
+        let orders: any[] = []
+        
+        if(result.status == "Success"){
+            orders = result.data
+        }
+        return orders
+    }
+
+
 
     public async getDetails(uid: string): Promise<any[]> {
         const result: any = await _crud.getAllQuery({collection:"orderProduct", token:uid, parameter: "Orders_uID"})
