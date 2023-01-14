@@ -21,7 +21,7 @@ router.route("/orders/create")
 
 
   router.route("/orders/all")
-  .get(CheckToken, async(_req,res) => {
+  .get(async(_req,res) => {
     const controller = new OrdersController();
     const response : any = await controller.getOrders(res);
     return res.send(response);
