@@ -13,7 +13,7 @@ router.route("/orders/create")
   })
 
   router.route("/orders/allUser")
-  .get(CheckToken, async(req,res) => {
+  .post(CheckToken, async(req,res) => {
     const controller = new OrdersController();
     const response : any = await controller.getOrdersUser(res, req.body.token);
     return res.send(response);

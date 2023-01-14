@@ -46,7 +46,7 @@ export default class OrdersController {
    * Get all orders from a user
    * @summary 
    */
-    @Get("/allUser")
+    @Post("/allUser")
     @SuccessResponse ('200', 'All Orders') 
     @Response ('422', 'Missing Field')
     @Response ('403', 'Error')
