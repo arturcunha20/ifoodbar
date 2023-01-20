@@ -99,6 +99,7 @@ paths:
                     required: true
                     schema:
                         type: object
+    /addOrder/stateChange:
         put:
             operationId: ChangeStateOrder
             produces:

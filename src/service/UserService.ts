@@ -48,13 +48,10 @@ export class UserService {
     
     if(result.status == "Success"){
       devices = result.data
-    }
-    else
-    {
-      return false
+      return devices
     }
 
-    return devices
+    return false
   }
 
   public async updateUser(uid: string, name:string): Promise<boolean> {

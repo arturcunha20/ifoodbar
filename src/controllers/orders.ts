@@ -44,9 +44,9 @@ export default class OrdersController {
     }
 
     /**
-   * Get all orders from a user
-   * @summary 
-   */
+    * Get all orders from a user
+    * @summary 
+    */
     @Post("/allUser")
     @SuccessResponse ('200', 'All Orders') 
     @Response ('422', 'Missing Field')
@@ -117,7 +117,7 @@ export default class OrdersController {
    * Change Order State
    * @summary
    */
-    @Put("/details")
+    @Put("/stateChange")
     @SuccessResponse ('200', 'Orders Details') 
     @Response ('422', 'Missing Field')
     @Response ('403', 'Error')
@@ -130,13 +130,36 @@ export default class OrdersController {
             if (!orderUid)
               throw new Error(res.status(422).json(response.validation({ label: "Field [orderUid] is required." })))
               
-            const data = await new UserService().verifyAdmin(token)
+
+            const verify = await new OrdersService().verifyOrder(orderUid)
+            if(verify)
+            {
+              const data = await new UserService().verifyAdmin(token)
             
-            if(data){
-              res.status(200).send({status: "Success", message:"Orders Details", data: data})
-            }else{
-              res.status(403).json(response.success("Error", [], res.statuscode))
+              if(data){
+                const changeState = await new OrdersService().updateState(token,orderUid)
+
+                if(changeState)
+                {
+                    var device = await new UserService().getDevice(token)
+
+                    if(device)
+                    {
+                        const resultNotification = await new OrdersService().notification(device,changeState)
+                        res.status(200).send({status: "Success", message:"BOAS", data: resultNotification})
+                    }
+                }
+              }
+              else
+              {
+                res.status(403).json(response.error("Error User Nao é Admin", res.statuscode))
+              }
             }
+            else
+            {
+              res.status(403).json(response.error("Error Order Nao Existe", res.statuscode))
+            }
+
           }
           catch(e){}
     }
