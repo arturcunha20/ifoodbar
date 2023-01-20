@@ -44,6 +44,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const UserService_1 = require("../service/UserService");
 const tsoa_1 = require("tsoa");
 const response = __importStar(require("../responses"));
 const OrdersService_1 = require("../service/OrdersService");
@@ -51,6 +52,7 @@ let OrdersController = class OrdersController {
     /**
      * Create a new order
      * @summary
+     *
      */
     addNewOrder(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -76,15 +78,33 @@ let OrdersController = class OrdersController {
         });
     }
     /**
-   * Get all orders
-   * @summary
-   */
-    getOrders(res, token) {
+    * Get all orders from a user
+    * @summary
+    */
+    getOrdersUser(res, token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token)
                     throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })));
-                const data = yield new OrdersService_1.OrdersService().getOrders(token);
+                const data = yield new OrdersService_1.OrdersService().getOrdersUser(token);
+                if (data) {
+                    res.status(200).send({ status: "Success", message: "All Orders by User", data: data });
+                }
+                else {
+                    res.status(403).json(response.success("Error", [], res.statuscode));
+                }
+            }
+            catch (e) { }
+        });
+    }
+    /**
+   * Get all orders
+   * @summary
+   */
+    getOrders(res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = yield new OrdersService_1.OrdersService().getOrders();
                 if (data) {
                     res.status(200).send({ status: "Success", message: "All Orders", data: data });
                 }
@@ -116,9 +136,47 @@ let OrdersController = class OrdersController {
             catch (e) { }
         });
     }
+    /**
+   * Change Order State
+   * @summary
+   */
+    changeStateOrder(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { token, orderUid } = req.body;
+                if (!token)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [Token] is required." })));
+                if (!orderUid)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [orderUid] is required." })));
+                const verify = yield new OrdersService_1.OrdersService().verifyOrder(orderUid);
+                if (verify) {
+                    const data = yield new UserService_1.UserService().verifyAdmin(token);
+                    if (data) {
+                        const changeState = yield new OrdersService_1.OrdersService().updateState(token, orderUid);
+                        if (changeState) {
+                            var device = yield new UserService_1.UserService().getDevice(token);
+                            if (device) {
+                                const resultNotification = yield new OrdersService_1.OrdersService().notification(device, changeState);
+                                res.status(200).send({ status: "Success", message: "BOAS", data: resultNotification });
+                            }
+                        }
+                    }
+                    else {
+                        res.status(403).json(response.error("Error User Nao é Admin", res.statuscode));
+                    }
+                }
+                else {
+                    res.status(403).json(response.error("Error Order Nao Existe", res.statuscode));
+                }
+            }
+            catch (e) { }
+        });
+    }
 };
 __decorate([
     (0, tsoa_1.Post)("/create"),
+    (0, tsoa_1.SuccessResponse)('200', 'Create Order'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -126,23 +184,51 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "addNewOrder", null);
 __decorate([
-    (0, tsoa_1.Get)("/all"),
+    (0, tsoa_1.Post)("/allUser"),
+    (0, tsoa_1.SuccessResponse)('200', 'All Orders'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
+    (0, tsoa_1.Response)('403', 'Error'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Query)()),
     __param(1, (0, tsoa_1.Hidden)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
+], OrdersController.prototype, "getOrdersUser", null);
+__decorate([
+    (0, tsoa_1.Get)("/all"),
+    (0, tsoa_1.SuccessResponse)('200', 'All Orders'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
+    (0, tsoa_1.Response)('403', 'Error'),
+    __param(0, (0, tsoa_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "getOrders", null);
 __decorate([
     (0, tsoa_1.Post)("/details"),
+    (0, tsoa_1.SuccessResponse)('200', 'Orders Details'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
+    (0, tsoa_1.Response)('403', 'Error'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "getOrderDetails", null);
+__decorate([
+    (0, tsoa_1.Put)("/stateChange"),
+    (0, tsoa_1.SuccessResponse)('200', 'Orders Details'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
+    (0, tsoa_1.Response)('403', 'Error'),
+    __param(0, (0, tsoa_1.Request)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "changeStateOrder", null);
 OrdersController = __decorate([
-    (0, tsoa_1.Route)("addOrder")
+    (0, tsoa_1.Route)("addOrder"),
+    (0, tsoa_1.Tags)('Orders')
 ], OrdersController);
 exports.default = OrdersController;

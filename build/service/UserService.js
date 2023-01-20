@@ -70,6 +70,17 @@ class UserService {
             return user;
         });
     }
+    getDevice(uid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield _crud.get({ collection: "DeviceToken", token: uid });
+            let devices = [];
+            if (result.status == "Success") {
+                devices = result.data;
+                return devices;
+            }
+            return false;
+        });
+    }
     updateUser(uid, name) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.getUser(uid);
@@ -79,6 +90,27 @@ class UserService {
                 return true;
             else
                 return false;
+        });
+    }
+    changeDevice(token, device) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const deviceResult = yield this.getDevice(token);
+            if (deviceResult) {
+                deviceResult.tokendevice = device;
+                const result = yield _crud.update({ collection: "DeviceToken", token: token, data: deviceResult });
+                if (result.status == "Success")
+                    return true;
+                else
+                    return false;
+            }
+            else {
+                var boas = { "tokendevice": device };
+                const result = yield _crud.post_user({ collection: "DeviceToken", data: boas, uid: true }, token);
+                if (result.status == "Success")
+                    return true;
+                else
+                    return false;
+            }
         });
     }
     addFavorites(data) {

@@ -41,6 +41,15 @@ describe("User", () => {
             .expect(200);
         console.log(response.body);
     }));
+    it("Update user", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield request("http://localhost:8000").put("/user/update")
+            .send({
+            name: "Iuri Andre",
+            token: tokenUser
+        })
+            .expect(200);
+        console.log(response.body);
+    }));
     it("SignOut a User", () => __awaiter(void 0, void 0, void 0, function* () {
         yield request("http://localhost:8000").post("/user/signout")
             .expect(200);

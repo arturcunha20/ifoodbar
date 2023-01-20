@@ -141,7 +141,7 @@ export default class OrdersController {
 
                 if(changeState)
                 {
-                    var device = await new UserService().getDevice(token)
+                    var device = await new UserService().getDevice(changeState.UserUid)
 
                     if(device)
                     {

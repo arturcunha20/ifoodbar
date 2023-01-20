@@ -19,6 +19,7 @@ app.use(cookieParser());
 app.use((0, morgan_1.default)("tiny"));
 app.use(express_1.default.static("public"));
 app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(undefined, {
+    explorer: true,
     swaggerOptions: {
         url: "/swagger.yaml",
     },

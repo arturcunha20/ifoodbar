@@ -34,6 +34,12 @@ router.route("/user/login")
     const response = yield controller.LogIn(_req, res);
     return res.send(response);
 }));
+router.route("/user/changeDevice")
+    .post(auth_1.CheckToken, (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const controller = new User_1.default();
+    const response = yield controller.deviceChange(_req, res);
+    return res.send(response);
+}));
 router.route("/user/signin")
     .post((_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const controller = new User_1.default();

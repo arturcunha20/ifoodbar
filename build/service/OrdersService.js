@@ -38,9 +38,13 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersService = void 0;
 const _crud = __importStar(require("../CloudFirestoreCRUD"));
+const axios_1 = __importDefault(require("axios"));
 class OrdersService {
     create(_data) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -56,13 +60,48 @@ class OrdersService {
             return result;
         });
     }
-    getOrders(uid) {
+    getOrdersUser(uid) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield _crud.getAllQuery({ collection: "orders", token: uid, parameter: "UserUid" });
             let orders = [];
-            if (result.status == "Success") {
+            if (result.status == "Success")
                 orders = result.data;
-            }
+            return orders;
+        });
+    }
+    getOrdersById(uid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield _crud.getAllQuery({ collection: "orders", token: uid, parameter: "uid" });
+            let orders = [];
+            if (result.status == "Success")
+                orders = result.data;
+            return orders;
+        });
+    }
+    verifyOrder(uid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield _crud.get({ collection: "orders", token: uid });
+            if (result.status == "Success")
+                return true;
+            return false;
+        });
+    }
+    updateState(_uid, order) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.getOrdersById(order);
+            result[0].state = 1;
+            const resultUpdate = yield _crud.update({ collection: "orders", token: order, data: result[0] });
+            if (resultUpdate)
+                return result[0];
+            return false;
+        });
+    }
+    getOrders() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield _crud.getAll({ collection: "orders" });
+            let orders = [];
+            if (result.status == "Success")
+                orders = result.data;
             return orders;
         });
     }
@@ -94,6 +133,31 @@ class OrdersService {
                 finally { if (e_1) throw e_1.error; }
             }
             return orders;
+        });
+    }
+    notification(device, order) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const headers = {
+                'Authorization': 'Bearer AAAA1OK4ayk:APA91bH1qmqQoC3KtS18HJtUjTxbq1uOzFIyB_5SZBQvuy3xqtdczJhtKu1SEXXtvWDdj8RsJjHuI3ebrICGoTOtmP8Jz_QSY8Ikjz-uJf28MWu-t0Ta0lm4HErziiROQ_Sag4M_Owlj',
+                'Content-Type': 'application/json'
+            };
+            const data = {
+                to: device.tokendevice,
+                collapse_key: "type_a",
+                notification: {
+                    body: "Pedido N" + order.description + " esta pronto",
+                    title: "IFoodBar"
+                }
+            };
+            yield axios_1.default.post('https://fcm.googleapis.com/fcm/send', data, { headers: headers })
+                .then(response => {
+                console.log(response.data);
+                return true;
+            })
+                .catch(error => {
+                console.log(error);
+                return false;
+            });
         });
     }
 }

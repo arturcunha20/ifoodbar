@@ -22,16 +22,28 @@ router.route("/orders/create")
     const response = yield controller.addNewOrder(req, res);
     return res.send(response);
 }));
-router.route("/orders/all")
-    .get(auth_1.CheckToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.route("/orders/allUser")
+    .post(auth_1.CheckToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const controller = new orders_1.default();
-    const response = yield controller.getOrders(res, req.body.token);
+    const response = yield controller.getOrdersUser(res, req.body.token);
+    return res.send(response);
+}));
+router.route("/orders/all")
+    .get((_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const controller = new orders_1.default();
+    const response = yield controller.getOrders(res);
     return res.send(response);
 }));
 router.route("/orders/details")
     .post(auth_1.CheckToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const controller = new orders_1.default();
     const response = yield controller.getOrderDetails(req, res);
+    return res.send(response);
+}));
+router.route("/orders/stateChange")
+    .put(auth_1.CheckToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const controller = new orders_1.default();
+    const response = yield controller.changeStateOrder(req, res);
     return res.send(response);
 }));
 exports.default = router;

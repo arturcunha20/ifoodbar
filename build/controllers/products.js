@@ -110,7 +110,7 @@ let ProductsController = class ProductsController extends tsoa_1.Controller {
                     throw new Error(res.status(422).json(response.validation({ label: "Field [Token] is required." })));
                 const resultType = yield new ProductsTypeService_1.ProductsTypeService().verifyType(token);
                 if (resultType == false)
-                    throw new Error(res.status(403).json(response.error("Could not find Product Type", res.statusCode)));
+                    throw new Error(res.status(404).json(response.error("Could not find Product Type", res.statusCode)));
                 const result = yield new ProductsService_1.ProductsService().queryByType(token);
                 if (result == false)
                     throw new Error(res.status(404).json(response.error("Could not find Products", res.statusCode)));
@@ -122,6 +122,8 @@ let ProductsController = class ProductsController extends tsoa_1.Controller {
 };
 __decorate([
     (0, tsoa_1.Get)("/all"),
+    (0, tsoa_1.SuccessResponse)('200', 'All data'),
+    (0, tsoa_1.Response)('403', 'Error'),
     __param(0, (0, tsoa_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -129,6 +131,9 @@ __decorate([
 ], ProductsController.prototype, "getProducts", null);
 __decorate([
     (0, tsoa_1.Post)("/create"),
+    (0, tsoa_1.SuccessResponse)('200', 'Create Product'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
+    (0, tsoa_1.Response)('403', 'Error'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -137,6 +142,9 @@ __decorate([
 ], ProductsController.prototype, "create", null);
 __decorate([
     (0, tsoa_1.Post)("/byType"),
+    (0, tsoa_1.SuccessResponse)('200', 'Product By Type'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
+    (0, tsoa_1.Response)('403', 'Not Found'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -144,6 +152,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "byType", null);
 ProductsController = __decorate([
-    (0, tsoa_1.Route)("products")
+    (0, tsoa_1.Route)("products"),
+    (0, tsoa_1.Tags)('Product')
 ], ProductsController);
 exports.default = ProductsController;

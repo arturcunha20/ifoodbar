@@ -95,6 +95,10 @@ let ProdutsTypeController = class ProdutsTypeController extends tsoa_1.Controlle
 };
 __decorate([
     (0, tsoa_1.Post)("/create"),
+    (0, tsoa_1.SuccessResponse)('200', 'Product Type created'),
+    (0, tsoa_1.Response)('401', 'Not Authenticated'),
+    (0, tsoa_1.Response)('403', 'Error'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -103,12 +107,15 @@ __decorate([
 ], ProdutsTypeController.prototype, "create", null);
 __decorate([
     (0, tsoa_1.Get)("/all"),
+    (0, tsoa_1.SuccessResponse)('200', 'Product Type created'),
+    (0, tsoa_1.Response)('403', 'Error'),
     __param(0, (0, tsoa_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ProdutsTypeController.prototype, "getAll", null);
 ProdutsTypeController = __decorate([
-    (0, tsoa_1.Route)("productsType")
+    (0, tsoa_1.Route)("productsType"),
+    (0, tsoa_1.Tags)('Product Type')
 ], ProdutsTypeController);
 exports.default = ProdutsTypeController;

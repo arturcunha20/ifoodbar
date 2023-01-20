@@ -75,7 +75,7 @@ let UserController = class UserController extends tsoa_1.Controller {
                     throw new Error(res.status(422).json(response.validation({ label: "Field [Name] is required." })));
                 const result = yield new UserService_1.UserService().updateUser(token, name);
                 if (result)
-                    res.status(200).json(response.success("Update", [result], res.statusCode));
+                    res.status(200).json(response.success("Update User", [result], res.statusCode));
                 else
                     res.status(403).json(response.success("Error", [], res.statuscode));
             }
@@ -118,10 +118,29 @@ let UserController = class UserController extends tsoa_1.Controller {
             catch (e) { }
         });
     }
+    deviceChange(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { token, deviceUID } = req.body;
+            try {
+                if (!token)
+                    throw new Error(res.status(422).json(response.validation({ label: "Field [Token] is required." })));
+                if (!deviceUID)
+                    throw new Error(res.status(422).json(response.validation({ type: "Field [deviceUID] is required." })));
+                const result = yield new UserService_1.UserService().changeDevice(token, deviceUID);
+                if (result) {
+                    res.status(200).send({ status: "Success", message: "Device changed" });
+                }
+                else {
+                    res.status(403).json(response.error("Some error occurred while changing device", res.statusCode));
+                }
+            }
+            catch (e) { }
+        });
+    }
     /**
      * Create a user
      *
-     * @summary y.
+     * @summary
      */
     signIn(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -212,7 +231,7 @@ let UserController = class UserController extends tsoa_1.Controller {
                 if (!uidFavorites)
                     throw new Error(res.status(422).json(response.validation({ label: "Field [uidFavorites] is required." })));
                 const result = yield new UserService_1.UserService().delFavorite(uidFavorites);
-                res.send(result);
+                res.status(200).json(response.success("Favorite Deleted", [result.data], res.statusCode));
             }
             catch (err) { }
         });
@@ -228,10 +247,10 @@ let UserController = class UserController extends tsoa_1.Controller {
                     throw new Error(res.status(422).json(response.validation({ label: "Field [uid] is required." })));
                 const data = yield new UserService_1.UserService().getFavorite(token);
                 if (data.length > 0) {
-                    res.send({ status: "Success", message: "All data", data: data });
+                    res.status(200).send({ status: "Success", message: "All data", data: data });
                 }
                 else {
-                    res.send({ status: "Error", message: "No data found", data: [] });
+                    res.status(403).send({ status: "Error", message: "No data found", data: [] });
                 }
             }
             catch (e) { }
@@ -245,6 +264,9 @@ __decorate([
      * @summary
      */
     ,
+    (0, tsoa_1.SuccessResponse)('200', 'User Data'),
+    (0, tsoa_1.Response)('403', 'Error'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Query)()),
     __param(1, (0, tsoa_1.Hidden)()),
@@ -259,6 +281,9 @@ __decorate([
      * @summary
      */
     ,
+    (0, tsoa_1.SuccessResponse)('200', "update User"),
+    (0, tsoa_1.Response)('403', 'Error'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -267,6 +292,9 @@ __decorate([
 ], UserController.prototype, "updateUser", null);
 __decorate([
     (0, tsoa_1.Post)("/login"),
+    (0, tsoa_1.SuccessResponse)('200', "Session Created"),
+    (0, tsoa_1.Response)('403', 'Error'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -274,7 +302,18 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "LogIn", null);
 __decorate([
+    (0, tsoa_1.Post)("/changeDevice"),
+    __param(0, (0, tsoa_1.Request)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "deviceChange", null);
+__decorate([
     (0, tsoa_1.Post)("/signin"),
+    (0, tsoa_1.SuccessResponse)('200', "Account created successfully."),
+    (0, tsoa_1.Response)('403', 'Error'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -283,6 +322,7 @@ __decorate([
 ], UserController.prototype, "signIn", null);
 __decorate([
     (0, tsoa_1.Post)("/signOut"),
+    (0, tsoa_1.SuccessResponse)('200', "Success"),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -291,6 +331,9 @@ __decorate([
 ], UserController.prototype, "signOut", null);
 __decorate([
     (0, tsoa_1.Post)("/addFavorites"),
+    (0, tsoa_1.SuccessResponse)('200', "Product added to favorites successfully."),
+    (0, tsoa_1.Response)('403', 'Error'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -299,6 +342,8 @@ __decorate([
 ], UserController.prototype, "addFavorites", null);
 __decorate([
     (0, tsoa_1.Delete)("/delFavorites"),
+    (0, tsoa_1.SuccessResponse)('200', "Favorite Deleted"),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
@@ -306,6 +351,9 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "delFavorites", null);
 __decorate([
+    (0, tsoa_1.SuccessResponse)('200', "Product added to favorites successfully."),
+    (0, tsoa_1.Response)('403', 'Error'),
+    (0, tsoa_1.Response)('422', 'Missing Field'),
     (0, tsoa_1.Get)("/allFavorites"),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Query)()),
@@ -315,6 +363,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllFavorites", null);
 UserController = __decorate([
-    (0, tsoa_1.Route)("user")
+    (0, tsoa_1.Route)("user"),
+    (0, tsoa_1.Tags)('User')
 ], UserController);
 exports.default = UserController;
