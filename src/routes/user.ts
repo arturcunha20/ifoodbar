@@ -18,10 +18,18 @@ router.route("/user/update")
     return res.send(response);
   });
 
-router.route("/user/login")
+  router.route("/user/login")
   .post(async (_req, res) => {
     const controller = new UserController();
     const response : any = await controller.LogIn(_req, res);
+    return res.send(response);
+  });
+
+  
+  router.route("/user/changeDevice")
+  .post(CheckToken,async (_req, res) => {
+    const controller = new UserController();
+    const response : any = await controller.deviceChange(_req, res);
     return res.send(response);
   });
 

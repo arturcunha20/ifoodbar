@@ -1,4 +1,5 @@
-import { Body, Post, Route, Request, Get, Query, Hidden, Tags, SuccessResponse,Response,  } from "tsoa";
+import { UserService } from "../service/UserService";
+import { Body, Post, Route, Request, Get, Query, Hidden, Tags, SuccessResponse,Response, Put  } from "tsoa";
 import * as response from "../responses";
 import { OrdersService } from "../service/OrdersService"
 
@@ -66,7 +67,7 @@ export default class OrdersController {
     }
 
 
-        /**
+    /**
    * Get all orders
    * @summary 
    */
@@ -111,4 +112,33 @@ export default class OrdersController {
           }
           catch(e){}
     }
+
+    /**
+   * Change Order State
+   * @summary
+   */
+    @Put("/details")
+    @SuccessResponse ('200', 'Orders Details') 
+    @Response ('422', 'Missing Field')
+    @Response ('403', 'Error')
+    public async changeStateOrder(@Request() req: any, @Body() res: any): Promise<any> {
+        try{
+            const { token, orderUid } = req.body
+            if (!token)
+              throw new Error(res.status(422).json(response.validation({ label: "Field [Token] is required." })))
+
+            if (!orderUid)
+              throw new Error(res.status(422).json(response.validation({ label: "Field [orderUid] is required." })))
+              
+            const data = await new UserService().verifyAdmin(token)
+            
+            if(data){
+              res.status(200).send({status: "Success", message:"Orders Details", data: data})
+            }else{
+              res.status(403).json(response.success("Error", [], res.statuscode))
+            }
+          }
+          catch(e){}
+    }
+
 }

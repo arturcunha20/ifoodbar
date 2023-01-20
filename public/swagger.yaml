@@ -35,7 +35,7 @@ paths:
                     schema:
                         type: object
     /addOrder/allUser:
-        get:
+        post:
             operationId: GetOrdersUser
             produces:
                 - application/json
@@ -89,6 +89,32 @@ paths:
             consumes:
                 - application/json
             description: 'Get details from order'
+            tags:
+                - Orders
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+        put:
+            operationId: ChangeStateOrder
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: 'Orders Details'
+                    schema:
+                        additionalProperties: true
+                '403':
+                    description: Error
+                '422':
+                    description: 'Missing Field'
+            consumes:
+                - application/json
+            description: 'Change Order State'
             tags:
                 - Orders
             security: []
@@ -280,6 +306,28 @@ paths:
             consumes:
                 - application/json
             description: 'Login a user'
+            tags:
+                - User
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: res
+                    required: true
+                    schema:
+                        type: object
+    /user/changeDevice:
+        post:
+            operationId: DeviceChange
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        additionalProperties: true
+            consumes:
+                - application/json
             tags:
                 - User
             security: []

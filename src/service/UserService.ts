@@ -1,4 +1,4 @@
-import { UserModel } from "../models/User"
+import { UserModel,DeviceToken } from "../models/User"
 import { Favorites } from "../models/Favorites"
 import * as _crud from "../CloudFirestoreCRUD"
 
@@ -42,6 +42,20 @@ export class UserService {
     return user
   }
 
+  public async getDevice(uid: string): Promise<any> {
+    const result: any = await _crud.get({collection:"DeviceToken", token: uid})
+    let devices: DeviceToken[] = []
+    
+    if(result.status == "Success"){
+      devices = result.data
+    }
+    else
+    {
+      return false
+    }
+
+    return devices
+  }
 
   public async updateUser(uid: string, name:string): Promise<boolean> {
     const user:any = await this.getUser(uid)
@@ -51,6 +65,27 @@ export class UserService {
     
     if(result.status == "Success") return true
     else return false
+  }
+
+
+  public async changeDevice(token: string, device:string): Promise<boolean> {
+    const deviceResult : any = await this.getDevice(token)
+
+    if(deviceResult)
+    {
+        deviceResult.tokendevice = device
+        const result: any = await _crud.update({collection: "DeviceToken", token: token, data:deviceResult}) 
+        if(result.status == "Success") return true
+        else return false
+    }
+    else
+    {
+      var boas : DeviceToken = {"tokendevice":device}
+      const result: any = await _crud.post_user({collection:"DeviceToken", data: boas, uid: true},token)
+
+      if(result.status == "Success") return true
+      else return false
+    }
   }
   
   public async addFavorites(data: FavoritesCreationParams): Promise<any> {

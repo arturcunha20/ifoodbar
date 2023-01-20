@@ -36,3 +36,8 @@ export interface UserModel {
     userType: any
 
   }
+
+
+export interface DeviceToken {
+    tokendevice: any
+}

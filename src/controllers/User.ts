@@ -97,6 +97,29 @@ export default class UserController extends Controller {
     }catch(e){ }
   }
 
+
+  @Post("/changeDevice")
+  public async deviceChange(@Request() req: any, @Body() res: any): Promise<any> {
+    const { token, deviceUID } = req.body;
+
+    try{    
+      if (!token)
+        throw new Error(res.status(422).json(response.validation({ label: "Field [Token] is required." })))
+  
+      if (!deviceUID)
+        throw new Error(res.status(422).json(response.validation({ type: "Field [deviceUID] is required." })));
+
+        const result = await new UserService().changeDevice(token,deviceUID)
+
+        if(result){
+          res.status(200).send({status: "Success", message:"Device changed"})
+        }
+        else{
+          res.status(403).json(response.error("Some error occurred while changing device", res.statusCode))
+        }
+    }catch(e){ }
+  }
+
   /**
    * Create a user
    * 

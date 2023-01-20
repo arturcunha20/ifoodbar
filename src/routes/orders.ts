@@ -34,4 +34,11 @@ router.route("/orders/create")
       return res.send(response);
     })
 
+  router.route("/orders/stateChange")
+    .put(CheckToken, async(req,res) => {
+      const controller = new OrdersController();
+      const response : any = await controller.changeStateOrder(req, res);
+      return res.send(response);
+    })
+
 export default router;
