@@ -177,8 +177,13 @@ export default class UserController extends Controller {
    @Post("/signOut")
    @SuccessResponse ('200', "Success") 
    public async signOut(@Request() req: any, @Body() res: any): Promise<any>{
+    const { token, device } = req.body;
+    if(token && device){
+      const resultType = await new UserService().delDevice(device, token)
+      console.log(resultType)
+    }
+
     res.clearCookie("session");
-    console.log(req.body);
     auth.signOut().catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;

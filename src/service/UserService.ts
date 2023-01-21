@@ -43,7 +43,8 @@ export class UserService {
   }
 
   public async getDevice(uid: string): Promise<any> {
-    const result: any = await _crud.get({collection:"DeviceToken", token: uid})
+    //const result: any = await _crud.get({collection:"DeviceToken", token: uid})
+    const result: any = await _crud.getAllQuery({collection:"DeviceToken", token: uid, parameter: "userUID"})
     let devices: DeviceToken[] = []
     
     if(result.status == "Success"){
@@ -65,24 +66,13 @@ export class UserService {
   }
 
 
-  public async changeDevice(token: string, device:string): Promise<boolean> {
-    const deviceResult : any = await this.getDevice(token)
-
-    if(deviceResult)
-    {
-        deviceResult.tokendevice = device
-        const result: any = await _crud.update({collection: "DeviceToken", token: token, data:deviceResult}) 
-        if(result.status == "Success") return true
-        else return false
+  public async changeDevice(token: string, device:string): Promise<any> {
+    const data: any = {
+      userUID: token,
+      tokendevice: device
     }
-    else
-    {
-      var boas : DeviceToken = {"tokendevice":device}
-      const result: any = await _crud.post_user({collection:"DeviceToken", data: boas, uid: true},token)
-
-      if(result.status == "Success") return true
-      else return false
-    }
+    const result = await _crud.post({collection:"DeviceToken", data: data})
+    return result
   }
   
   public async addFavorites(data: FavoritesCreationParams): Promise<any> {
@@ -102,5 +92,15 @@ export class UserService {
       favorites = result.data
     }
     return favorites
+  }
+
+  public async delDevice(tokendevice: String, userUID: String): Promise<any[]> {
+    const result: any = await _crud.getAllQuery({collection:"DeviceToken", token: tokendevice, parameter: "tokendevice"})
+    const resultDel: any[] = []
+    for await (const res of result.data) {
+      if(res.userUID == userUID)
+        resultDel.push(await _crud.DeleteDoc({collection:"DeviceToken", token: res.uid}))
+    }
+    return resultDel
   }
 }

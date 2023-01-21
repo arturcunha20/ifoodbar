@@ -142,11 +142,17 @@ export default class OrdersController {
                 if(changeState)
                 {
                     var device = await new UserService().getDevice(changeState.UserUid)
-
                     if(device)
                     {
-                        const resultNotification = await new OrdersService().notification(device,changeState)
+                        let resultNotification: any 
+                        for await (const res of device) {
+                          resultNotification += await new OrdersService().notification(res.tokendevice,changeState)
+                        }
                         res.status(200).send({status: "Success", message:"BOAS", data: resultNotification})
+                        
+                    }
+                    else{
+                      res.status(403).send({status: "ERROR", message:"Some Error ocurred", data: device})
                     }
                 }
               }

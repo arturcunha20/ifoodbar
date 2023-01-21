@@ -78,7 +78,7 @@ export class OrdersService {
           };
 
         const data = {
-            to: device.tokendevice,
+            to: device,
             collapse_key: "type_a",
             notification : {
                 body : "Pedido N" + order.description + " esta pronto",

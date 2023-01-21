@@ -41,7 +41,7 @@ router.route("/user/signin")
   });
 
 router.route("/user/signOut")
-  .post(async (_req, res) => {
+  .post(CheckToken, async (_req, res) => {
     const controller = new UserController();
     const response : any = await controller.signOut(_req, res) ;
     return res.send(response);
